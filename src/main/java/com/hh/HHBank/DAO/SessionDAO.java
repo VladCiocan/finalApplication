@@ -1,12 +1,6 @@
 package com.hh.HHBank.DAO;
 
-import static com.magitech.springapp.utils.Constants.LOGGER;
-
-import java.util.concurrent.TimeUnit;
-
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
