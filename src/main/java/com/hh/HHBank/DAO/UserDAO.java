@@ -1,6 +1,10 @@
 package com.hh.HHBank.DAO;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -60,17 +64,36 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 			e.printStackTrace();
 		}
 		
-		if(user == null) {
+		if (user != null) {
 			
-			throw new EntityNotFoundException("User not found");
+			Session session = new Session();
+			session.setUuid(UUID.randomUUID().toString());
+			long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+			session.setSessionDate(new Timestamp(currentTimestamp));
+			session.setUserid(user.getUserID());
+			em.persist(session);
+			em.flush();
+			
+			return user;
+			
 		}
 		
-		return user;
+		throw new EntityNotFoundException("User not found");
+		
 	}
 	
-	public Session checkSession() {
-		
-		return null;
+	public String checkSession(String sessionUUID) {
+		Session session = null;	
+		try {
+			session  = (Session) em.createQuery("SELECT s FROM Session s WHERE sessionUUID = :sessionUUID")
+					.setParameter("sessionUUID", sessionUUID).getSingleResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		if(session.getUuid() != null) {
+			return "User has a valid session";
+		}
+		return "The user does not have a valid session";
 	}
 
 }

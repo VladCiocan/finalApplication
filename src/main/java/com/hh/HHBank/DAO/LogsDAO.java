@@ -1,5 +1,6 @@
 package com.hh.HHBank.DAO;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -65,5 +66,28 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		}
 		return log;
 	}
+	
+	public Logs GetByActionType(String actiontype) {
+		Logs log = null;
+		try {
+			log  = (Logs) em.createQuery("SELECT l FROM Logs l WHERE actiontype = :actiontype")
+					.setParameter("actiontype", actiontype).getSingleResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return log;
+	}
+	
+	public Logs GetByDate(Timestamp actiondate) {
+		Logs log = null;
+		try {
+			log  = (Logs) em.createQuery("SELECT l FROM Logs l WHERE actiondate = :actiondate")
+					.setParameter("actiondate", actiondate).getSingleResult();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return log;
+	}
+	
 
 }

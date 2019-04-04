@@ -54,13 +54,8 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 	}
 
 	@Override
-	public void updateById(Session s, long id) {
-		Session sess = em.find(Session.class, id);
-		sess.setSessionDate(s.getSessionDate());
-		sess.setUserid(s.getUserid());
-		sess.setUuid(s.getUuid());
-		em.merge(sess);
-		
+	public void updateById(Session s) {
+		em.merge(s);	
 	}
 
 	@Override
