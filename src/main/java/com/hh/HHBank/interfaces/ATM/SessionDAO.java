@@ -13,7 +13,7 @@ public interface SessionDAO {
 	
 	public void deleteById(long id);
 	
-	public void updateById(long id);
+	public void updateById(Session s, long id);
 	
 	public void createSession(Session s);
 }

@@ -15,7 +15,7 @@ public interface LogsDAO {
 	
 	public void deleteById(long id);
 	
-	public void updateById(long id);
+	public void updateById(Logs l,long id);
 	
 	public void createLog(Logs l);
 	

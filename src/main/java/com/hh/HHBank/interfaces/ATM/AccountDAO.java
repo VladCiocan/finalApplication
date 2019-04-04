@@ -13,7 +13,7 @@ public interface AccountDAO {
 	
 	public void deleteById(long id);
 	
-	public void updateById(long id);
+	public void updateById(Account a);
 	
 	public void createAcct(Account a);
 	

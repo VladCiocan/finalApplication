@@ -16,7 +16,7 @@ public interface TransactionDAO {
 	
 	public void createTransaction(Transaction t);
 	
-	public void updateById(long id);
+	public void updateById(Transaction t);
 	
 	public void deletebById(long id);
 	

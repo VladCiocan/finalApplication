@@ -3,6 +3,7 @@ package com.hh.HHBank.DAO;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
@@ -13,12 +14,16 @@ import com.hh.HHBank.Entities.Account;
 @Repository
 @Transactional
 public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
+	
 	@PersistenceContext
 	private EntityManager em;
 	
 	@Override
 	public Account getAcctById(long id) {
 		Account acct = em.find(Account.class, id);
+		if (acct ==null) {
+			throw new EntityNotFoundException("Can't find Account for ID " + id);
+		}
 		return acct;
 	}
 	
@@ -35,15 +40,14 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 	}
 
 	@Override
-	public void updateById(long id) {
-		// TODO Auto-generated method stub
-		
+	public void updateById(Account a) {
+		em.merge(a);
 	}
 
 	@Override
 	public void createAcct(Account a) {
-		// TODO Auto-generated method stub
-		
+		em.persist(a);
+	
 	}
 
 }
