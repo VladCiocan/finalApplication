@@ -10,15 +10,19 @@ public interface TransactionDAO {
 
 	public Transaction getTransactionById (long id);
 	
-	public Transaction getTransactionByDate (Timestamp ts);
+	public List<Transaction> getTransactionByInterval (Timestamp ts, Timestamp tf);
 	
 	public List<Transaction> getAllTransactions();
 	
 	public void createTransaction(Transaction t);
 	
-	public void updateById(long id);
+	public void updateTransaction(Transaction transaction);
 	
 	public void deletebById(long id);
 	
+	public List<Transaction> getBySourceAccount(long accountId);
 	
+	public void approveTransaction(Transaction t, long userId);
+	
+	public void rejectTransaction(Transaction t, long userId);
 }

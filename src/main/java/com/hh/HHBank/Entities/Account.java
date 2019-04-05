@@ -37,7 +37,7 @@ public class Account implements Serializable {
 	private String status;
 
 	@Column(name = "ammount")
-	private String ammount;
+	private double ammount;
 
 	@Column(name = "createdDate")
 	private Timestamp createdDate;
@@ -82,11 +82,11 @@ public class Account implements Serializable {
 		this.status = status;
 	}
 
-	public String getAmmount() {
+	public double getAmmount() {
 		return ammount;
 	}
 
-	public void setAmmount(String ammount) {
+	public void setAmmount(double ammount) {
 		this.ammount = ammount;
 	}
 

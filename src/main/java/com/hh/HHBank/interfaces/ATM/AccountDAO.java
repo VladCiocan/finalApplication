@@ -13,10 +13,15 @@ public interface AccountDAO {
 	
 	public void deleteById(long id);
 	
-	public void updateById(long id);
+	public void updateAccount(Account acct);
 	
 	public void createAcct(Account a);
 	
+	public List<Account> getByUserId(long userId);
 	
-		
+	public String withdrawMoney(long accountId, long userId, double ammount, String currency);
+	
+	public String topUpAccount(long accountId, long userId, double ammount, String currency);
+	
+	public String transferMoney(long sourceAcctId, long userId, double ammount, String currency, long destinationAcctId);
 }
