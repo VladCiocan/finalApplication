@@ -56,33 +56,33 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		
 	}
 	
-	public Logs GetByUserID(long id) {
-		Logs log = null;
+	public List<Logs> GetByUserID(long id) {
+		List<Logs> log = null;
 		try {
-			log  = (Logs) em.createQuery("SELECT l FROM Logs l WHERE userid = :userid")
-					.setParameter("userid", id).getSingleResult();
+			log  = em.createQuery("SELECT l FROM Logs l WHERE userid = :userid")
+					.setParameter("userid", id).getResultList();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return log;
 	}
 	
-	public Logs GetByActionType(String actiontype) {
-		Logs log = null;
+	public List<Logs> GetByActionType(String actiontype) {
+		List<Logs> log = null;
 		try {
-			log  = (Logs) em.createQuery("SELECT l FROM Logs l WHERE actiontype = :actiontype")
-					.setParameter("actiontype", actiontype).getSingleResult();
+			log  =  em.createQuery("SELECT l FROM Logs l WHERE actiontype = :actiontype")
+					.setParameter("actiontype", actiontype).getResultList();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return log;
 	}
 	
-	public Logs GetByDate(Timestamp actiondate) {
-		Logs log = null;
+	public List<Logs> GetByDate(Timestamp actiondate) {
+		List<Logs> log = null;
 		try {
-			log  = (Logs) em.createQuery("SELECT l FROM Logs l WHERE actiondate = :actiondate")
-					.setParameter("actiondate", actiondate).getSingleResult();
+			log  =  em.createQuery("SELECT l FROM Logs l WHERE actiondate = :actiondate")
+					.setParameter("actiondate", actiondate).getResultList();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

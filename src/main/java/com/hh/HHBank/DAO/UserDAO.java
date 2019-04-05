@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.hh.HHBank.Entities.Logs;
 import com.hh.HHBank.Entities.Session;
 import com.hh.HHBank.Entities.User;
 
@@ -71,6 +72,13 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 			long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
 			session.setSessionDate(new Timestamp(currentTimestamp));
 			session.setUserid(user.getUserID());
+			
+			Logs l = new Logs();
+			l.setActiondate(new Timestamp(currentTimestamp));
+			l.setActiontype("Login");
+			l.setMessage("Login Successful");
+			l.setUid(user.getUserID());
+			em.persist(l);
 			em.persist(session);
 			em.flush();
 			
@@ -78,22 +86,37 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 			
 		}
 		
+		Logs l = new Logs();
+		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		l.setActiondate(new Timestamp(currentTimestamp));
+		l.setActiontype("Login");
+		l.setMessage("Login Failed");
+		l.setUid(user.getUserID());
+		em.persist(l);
+		em.flush();
+		
 		throw new EntityNotFoundException("User not found");
 		
 	}
 	
-	public String checkSession(String sessionUUID) {
-		Session session = null;	
+	public long checkSession(String sessionUUID) {
+		Session session = null;
+		Timestamp sessionExpires;
+		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		Timestamp currentTs = new Timestamp(currentTimestamp);
 		try {
-			session  = (Session) em.createQuery("SELECT s FROM Session s WHERE sessionUUID = :sessionUUID")
-					.setParameter("sessionUUID", sessionUUID).getSingleResult();
-		}catch(Exception e) {
+			session = (Session) em.createQuery("SELECT s FROM Session s WHERE uuid = :uuid")
+					.setParameter("uuid", sessionUUID).getSingleResult();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(session.getUuid() != null) {
-			return "User has a valid session";
+		sessionExpires = new Timestamp(session.getSessionDate().getTime() + 60 * 30 * 1000);
+
+		if (currentTs.after(sessionExpires)) {
+			return 0;
+		} else {
+			return session.getUserid();
 		}
-		return "The user does not have a valid session";
 	}
 
 }

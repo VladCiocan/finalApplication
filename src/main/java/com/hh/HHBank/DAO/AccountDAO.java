@@ -50,10 +50,10 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 	
 	}
 	
-	public Account getAccountByUserId(long id) {
-		Account acct = null;
+	public List<Account> getAccountByUserId(long id) {
+		List<Account> acct = null;
 		try {
-			acct = (Account) em.createQuery("SELECT a FROM Account a WHERE userid = :userid").setParameter("userid", id).getSingleResult();
+			acct = em.createQuery("SELECT a FROM Account a WHERE userid = :userid").setParameter("userid", id).getResultList();
 		}
 		catch(Exception e){
 			 e.printStackTrace();
