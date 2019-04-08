@@ -24,5 +24,5 @@ public interface LogsDAO {
 	
 	public List<Logs> getLogsByActionType(String actionType);
 	
-	public Logs getLogsByDate(Timestamp ts);
+	public List<Logs> getLogsByDate(Timestamp ts, Timestamp tf);
 }

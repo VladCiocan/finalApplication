@@ -11,9 +11,9 @@ public interface SessionDAO {
 	
 	public List<Session> getAllSessions();
 	
-	public void deleteById(long id);
-	
-	public void updateById(long id);
-	
 	public void createSession(Session s);
+	
+	public boolean isValid(Session s);
+	
+	public String getSessionByUserId(long userId);
 }

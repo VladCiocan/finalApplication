@@ -36,9 +36,9 @@ public class LogController {
 		return logR.getLogsByActionType(atype);
 	}
 	
-	@GetMapping("/{logTs}/log")
-	public Logs getLogByDate(@PathVariable Timestamp ts) {
-		return logR.getLogsByDate(ts);
+	@GetMapping("/{logTs}/{logsTf}/log")
+	public List<Logs> getLogByDate(@PathVariable Timestamp ts, @PathVariable Timestamp tf) {
+		return logR.getLogsByDate(ts, tf);
 	}
 	
 	@PostMapping("/log")

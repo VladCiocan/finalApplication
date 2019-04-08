@@ -22,7 +22,7 @@ public interface TransactionDAO {
 	
 	public List<Transaction> getBySourceAccount(long accountId);
 	
-	public void approveTransaction(Transaction t, long userId);
+	public String approveTransaction(Transaction t, long userId);
 	
-	public void rejectTransaction(Transaction t, long userId);
+	public String rejectTransaction(Transaction t, long userId);
 }

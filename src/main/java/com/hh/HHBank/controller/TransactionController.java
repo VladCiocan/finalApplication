@@ -45,10 +45,7 @@ public class TransactionController {
 	
 	@PutMapping("/transaction/{tid}")
 	public void updateTransaction(@PathVariable long tid, @RequestBody @Valid Transaction transactionReq) {
-		Transaction transactionTemp = transactionR.getTransactionById(tid);
-		transactionTemp.setStatus(transactionReq.getStatus());
-		transactionTemp.setMessage(transactionReq.getMessage());
-		transactionR.updateTransaction(transactionTemp);
+		transactionR.updateTransaction(transactionReq);
 	}
 	
 	@PostMapping("/transaction")

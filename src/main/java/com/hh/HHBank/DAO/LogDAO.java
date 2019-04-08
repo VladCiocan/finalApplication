@@ -1,6 +1,7 @@
 package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -25,9 +26,15 @@ public class LogDAO implements LogsDAO {
 		return log;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Logs> getAllLogs() {
-		List<Logs> logs = em.createQuery("SELECT l FROM Logs l").getResultList();
+		List<Logs> logs = new ArrayList<Logs>();
+		try {
+			logs = (List<Logs>) em.createQuery("SELECT l FROM Logs l").getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return logs;
 	}
 
@@ -39,7 +46,10 @@ public class LogDAO implements LogsDAO {
 
 	@Override
 	public void updateLog(Logs log) {
-		em.merge(log);
+		Logs tempLog = em.find(Logs.class, log.getId());
+		tempLog.setActiontype(log.getActiontype());
+		tempLog.setMessage(log.getMessage());
+		em.merge(tempLog);
 	}
 
 	@Override
@@ -47,24 +57,43 @@ public class LogDAO implements LogsDAO {
 		em.persist(l);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Logs> getLogsByUserId(long userId) {
-		List<Logs> logs = em.createQuery("SELECT l FROM Logs l WHERE uid = :uid").setParameter("uid", userId)
-				.getResultList();
+		List<Logs> logs = new ArrayList<Logs>();
+		try {
+			logs = (List<Logs>) em.createQuery("SELECT l FROM Logs l WHERE uid = :uid").setParameter("uid", userId)
+					.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return logs;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Logs> getLogsByActionType(String actionType) {
-		List<Logs> logs = em.createQuery("SELECT l FROM Logs l WHERE actiontype = :actionType")
-				.setParameter("actionType", actionType).getResultList();
+		List<Logs> logs = new ArrayList<Logs>();
+		try {
+			logs = (List<Logs>) em.createQuery("SELECT l FROM Logs l WHERE actiontype = :actionType")
+					.setParameter("actionType", actionType).getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return logs;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Logs getLogsByDate(Timestamp ts) {
-		Logs log = (Logs) em.createQuery("SELECT l FROM Logs l WHERE actiondate = :actiondate").setParameter("actiondate", ts).getSingleResult();
-		return log;
+	public List<Logs> getLogsByDate(Timestamp ts, Timestamp tf) {
+		List<Logs> logs = new ArrayList<Logs>();
+		try {
+			logs = (List<Logs>) em.createQuery("SELECT l FROM Logs l WHERE actiondate >= :ts and actiondate <= :tf")
+					.setParameter("ts", ts).setParameter("tf", tf).getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return logs;
 	}
 
 }

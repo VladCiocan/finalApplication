@@ -34,15 +34,7 @@ public class UserController {
 	
 	@PutMapping("/user/{uid}")
 	public void updateUser(@PathVariable Long uid, @Valid @RequestBody User userReq) {
-		User userTemp = userR.getUserById(uid);
-		userTemp.setEmail(userReq.getEmail());
-		userTemp.setFirstName(userReq.getFirstName());
-		userTemp.setLastName(userReq.getLastName());
-		userTemp.setPassword(userReq.getPassword());
-		userTemp.setPhone(userReq.getEmail());
-		userTemp.setRole(userReq.getRole());
-		userTemp.setUsername(userReq.getUsername());
-		userR.updateUser(userTemp);
+		userR.updateUser(userReq);
 	}
 	
 	@PostMapping("/user")

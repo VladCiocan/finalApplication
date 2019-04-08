@@ -34,10 +34,7 @@ public class AccountController {
 	
 	@PutMapping("/account/{aid}")
 	public void updateAccount(@PathVariable long aid, @RequestBody @Valid Account accountReq) {
-		Account acctTemp = acctR.getAcctById(aid);
-		acctTemp.setStatus(accountReq.getStatus());
-		acctTemp.setCurrency(accountReq.getCurrency());
-		acctR.updateAccount(acctTemp);
+		acctR.updateAccount(accountReq);
 	}
 	
 	@PostMapping("/account")

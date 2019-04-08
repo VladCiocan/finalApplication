@@ -2,8 +2,6 @@ package com.hh.HHBank.interfaces.ATM;
 
 import java.util.List;
 
-import com.hh.HHBank.Entities.Account;
-import com.hh.HHBank.Entities.Session;
 import com.hh.HHBank.Entities.User;
 
 public interface UserDAO {
@@ -21,5 +19,5 @@ public interface UserDAO {
 		
 		public String login(String username, String password);
 		
-		public long checkSession(String userId);
+		public String changePassword(long userId, String password, String newPassword);
 }
