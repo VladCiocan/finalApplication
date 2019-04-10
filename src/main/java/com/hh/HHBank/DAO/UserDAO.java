@@ -1,6 +1,7 @@
 package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +36,13 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 
 	@Override
 	public List<User> getAllUsers() {
-		List<User> users = em.createQuery("select u from User u").getResultList();
+		List<User> users = new ArrayList<User>();
+		try {
+		users = em.createQuery("select u from User u").getResultList();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		return users;
 	}
 
@@ -55,67 +62,56 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 		em.persist(u);
 	}
 	
-	public User Login(String username, String password) {
-		
-		User user = null;	
+	public String login(String username, String password) {
+		User user = null;
+		String returnMessage = "";
 		try {
-			user  = (User) em.createQuery("SELECT u FROM User u WHERE username = :username AND password = :password")
-					.setParameter("username", username).setParameter("password", password).getSingleResult();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		if (user != null) {
-			
-			Session session = new Session();
-			session.setUuid(UUID.randomUUID().toString());
-			long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-			session.setSessionDate(new Timestamp(currentTimestamp));
-			session.setUserid(user.getUserID());
-			
-			Logs l = new Logs();
-			l.setActiondate(new Timestamp(currentTimestamp));
-			l.setActiontype("Login");
-			l.setMessage("Login Successful");
-			l.setUid(user.getUserID());
-			em.persist(l);
-			em.persist(session);
-			em.flush();
-			
-			return user;
-			
-		}
-		
-		Logs l = new Logs();
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-		l.setActiondate(new Timestamp(currentTimestamp));
-		l.setActiontype("Login");
-		l.setMessage("Login Failed");
-		l.setUid(user.getUserID());
-		em.persist(l);
-		em.flush();
-		
-		throw new EntityNotFoundException("User not found");
-		
-	}
-	
-	public long checkSession(String sessionUUID) {
-		Session session = null;
-		Timestamp sessionExpires;
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-		Timestamp currentTs = new Timestamp(currentTimestamp);
-		try {
-			session = (Session) em.createQuery("SELECT s FROM Session s WHERE uuid = :uuid")
-					.setParameter("uuid", sessionUUID).getSingleResult();
+			user = (User) em.createQuery("SELECT u from User u WHERE username = :username")
+					.setParameter("username", username).getSingleResult();
+			if (user != null && user.getPassword().equals(password)) {
+				Session s = new Session();
+				s.setUserid(user.getUserID());
+				s.setUuid(UUID.randomUUID().toString());
+				Date d = new Date();
+				s.setSessionDate(new Timestamp(d.getTime()));
+				em.persist(s);
+				em.flush();
+
+				Logs l = new Logs();
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
+				l.setActiontype("login");
+				l.setUid(user.getUserID());
+				l.setMessage("Successfull login");
+				em.persist(l);
+				em.flush();
+
+				returnMessage = s.getUuid();
+			} else if (user != null && !user.getPassword().equals(password)) {
+				Logs l = new Logs();
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
+				l.setActiontype("login");
+				l.setUid(user.getUserID());
+				l.setMessage("Failed login");
+				em.persist(l);
+				em.flush();
+				returnMessage =  "Password is incorrect, please try again";
+			} else {
+				returnMessage = "Login credentials are incorrect!";
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sessionExpires = new Timestamp(session.getSessionDate().getTime() + 60 * 30 * 1000);
-
-		if (currentTs.after(sessionExpires)) {
-			return 0;
+		return returnMessage;
+	}
+	
+	public String changePassword(long userId, String password, String newPassword) {
+		User tempUser = em.find(User.class, userId);
+		if(password.equals(tempUser.getPassword())) {
+			tempUser.setPassword(newPassword);
+			em.merge(tempUser);
+			return "Password change successful!";
 		} else {
-			return session.getUserid();
+			return "Current password is incorrect, please try again!";
 		}
 	}
 

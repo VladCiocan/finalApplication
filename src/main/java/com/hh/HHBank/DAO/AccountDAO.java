@@ -1,5 +1,6 @@
 package com.hh.HHBank.DAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,9 +28,17 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 		return acct;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Account> getAllAccts() {
-		List<Account> acct = em.createQuery("select a from Account a").getResultList();
+		List<Account> acct = new ArrayList<Account>();
+		try {
+			acct = (List<Account>) em.createQuery("select a from Account a").getResultList();
+		}
+		catch(Exception e){
+			 e.printStackTrace();
+		}
+		
 		return acct;
 	}
 
@@ -50,6 +59,13 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 	
 	}
 	
+	public long saveAcct(Account a) {
+		em.persist(a);
+		return a.getId();
+	
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Account> getAccountByUserId(long id) {
 		List<Account> acct = null;
 		try {
@@ -64,5 +80,20 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 		}
 		return acct;
 	}
+	
+	public Account getAccountByIdAndUserId (long accountid, long userid) {
+		Account account = null;
+		try {
+			account = (Account)em.createQuery("SELECT a FROM Account a WHERE id = :accountId and userId = :userId").setParameter("accountId", accountid).setParameter("userId", userid).getSingleResult();
+		}
+		catch(Exception e){
+			 e.printStackTrace();
+		}
+		if (account == null) {
+			throw new EntityNotFoundException("Can't find Account for " + accountid);
+		}
+		return account;
+	}
+	
 
 }

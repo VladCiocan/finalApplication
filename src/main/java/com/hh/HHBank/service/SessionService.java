@@ -29,4 +29,20 @@ public class SessionService {
 		return session.getUuid();
 	}
 	
+	public boolean isValid(Session s) {
+		
+		Session session = new Session ();
+		session = sessionDAO.getSessionById(s.getId());
+		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		Timestamp currentTs = new Timestamp(currentTimestamp);
+		Timestamp sessionExpires = new Timestamp(session.getSessionDate().getTime() + 60 * 30 * 1000);
+		
+		if (currentTs.after(sessionExpires)) {
+			return false;
+		} 
+		else 
+		{
+			return true;
+		}
+	}
 }

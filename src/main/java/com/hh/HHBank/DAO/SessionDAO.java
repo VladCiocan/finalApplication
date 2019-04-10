@@ -1,5 +1,6 @@
 package com.hh.HHBank.DAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -43,7 +44,13 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 
 	@Override
 	public List<Session> getAllSessions() {
-		List<Session> sessions = em.createQuery("SELECT s FROM Session s").getResultList();
+		List<Session> sessions = new ArrayList<Session>();
+		try {
+			sessions = (List<Session>)em.createQuery("SELECT s FROM Session s").getResultList();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return sessions;
 	}
 
@@ -62,6 +69,12 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 	public void createSession(Session s) {
 		em.persist(s);
 		
+	}
+	
+	public String getSessionByUserId(long userId) {
+		Session s = (Session) em.createQuery("SELECT s FROM Session s WHERE userid =: userID")
+				.setParameter("userId", userId).getSingleResult();
+		return s.getUuid().toString();
 	}
 	
 }

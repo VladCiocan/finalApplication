@@ -1,6 +1,7 @@
 package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,9 +29,16 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		return logs;
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Logs> getAllLogs() {
-		List<Logs> logs = em.createQuery("select l from Logs l").getResultList();
+		List<Logs> logs = new ArrayList<Logs>();
+		try {
+		logs = em.createQuery("select l from Logs l").getResultList();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		return logs;
 	}
 
@@ -56,6 +64,7 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Logs> GetByUserID(long id) {
 		List<Logs> log = null;
 		try {
@@ -67,6 +76,7 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		return log;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Logs> GetByActionType(String actiontype) {
 		List<Logs> log = null;
 		try {
@@ -78,15 +88,21 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		return log;
 	}
 	
-	public List<Logs> GetByDate(Timestamp actiondate) {
+	@SuppressWarnings("unchecked")
+	public List<Logs> GetByDate(Timestamp ts, Timestamp tf) {
 		List<Logs> log = null;
 		try {
-			log  =  em.createQuery("SELECT l FROM Logs l WHERE actiondate = :actiondate")
-					.setParameter("actiondate", actiondate).getResultList();
+			log = (List<Logs>) em.createQuery("SELECT l FROM Logs l WHERE actiondate >= :ts and actiondate <= :tf")
+					.setParameter("ts", ts).setParameter("tf", tf).getResultList();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return log;
+	}
+	
+	public String saveLog(Logs logs) {
+		em.persist(logs);
+		return logs.getMessage();
 	}
 	
 

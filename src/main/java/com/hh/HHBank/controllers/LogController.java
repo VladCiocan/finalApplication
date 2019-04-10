@@ -1,12 +1,13 @@
 package com.hh.HHBank.controllers;
 
-import java.awt.print.Pageable;
+
 import java.sql.Timestamp;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +37,9 @@ public class LogController {
 		return logR.GetByActionType(actiontype);
 	}
 	
-	@GetMapping("/{logTs}/log")
-	public List<Logs> getLogByDate(@PathVariable Timestamp ts) {
-		return logR.GetByDate(ts);
+	@GetMapping("/{ts}/{tf}/log")
+	public List<Logs> getLogByDate(@PathVariable Timestamp ts, @PathVariable Timestamp tf) {
+		return logR.GetByDate(ts, tf);
 	}
 	
 	@PostMapping("/log")

@@ -1,11 +1,12 @@
 package com.hh.HHBank.controllers;
 
-import java.awt.print.Pageable;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,52 +23,63 @@ import com.hh.HHBank.service.AccountService;
 public class AccountController {
 	
 	@Autowired
-	private AccountDAO accountDao;
-	
-	@Autowired
-	private AccountService accountServ;
+	private AccountService accountService;
 	
 	@GetMapping("/accounts")
 	public List<Account> getAllAccounts(Pageable pageable){
-		return accountDao.getAllAccts();
-	}
-	
-	@GetMapping("/user/{userid}/accounts")
-	public List<Account> getUserAccounts(@PathVariable long userid){
-		return accountDao.getAccountByUserId(userid);
+		return accountService.getAllAccts();
 	}
 	
 	@GetMapping("/account/{id}")
 	public Account getAccountById(@PathVariable long id) {
-		return accountDao.getAcctById(id);
+		return accountService.getAcctById(id);
 	}
+	
+	@GetMapping("/user/{userid}/accounts")
+	public List<Account> getUserAccounts(@PathVariable long userid){
+		return accountService.getAccountsByUserId(userid);
+	}
+	
 	
 	@PutMapping("/account/{accountid}")
 	public void updateAccount(@PathVariable long accountid, @RequestBody @Valid Account accountReq) {
-		Account acctTemp = accountDao.getAcctById(accountid);
+		Account acctTemp = accountService.getAcctById(accountid);
 		acctTemp.setStatus(accountReq.getStatus());
 		acctTemp.setCurrency(accountReq.getCurrency());
-		accountDao.updateById(acctTemp);
+		accountService.updateAccount(acctTemp);
 	}
 	
 	@PostMapping("/account")
 	public void createAccount(@RequestBody @Valid Account acct) {
-		accountDao.createAcct(acct);
+		accountService.createAccount(acct);
 	}
+	
 	@DeleteMapping("/account/{accountid}")
 	public void deleteAccount(@PathVariable long accountid) {
-		accountDao.deleteById(accountid);
+		accountService.deleteById(accountid);
 	}
 	
-	@PostMapping("/account/deposit/{accountid}")
-	public String depositInAccount(@PathVariable long accountid, @RequestBody @Valid double ammount, String type, String message) {
-		accountServ.depositMoney(ammount, accountid, type, message);
-		return "ok";
+	@PostMapping("/account/{sourceAcctId}/transfer")
+	public String transferMoney(@PathVariable long sourceAcctId, long userId, double ammount, String currency, long destinationAcctId) {
+		return accountService.transferMoney(sourceAcctId, userId, ammount, currency, destinationAcctId);
 	}
 	
-	@PostMapping("/account/{sourceaccount}/transfer/{targetaccount}")
-	public String transferMoneyToAccounts(@PathVariable long sourceaccount, long targetaccount, @RequestBody @Valid double ammount, String type, String message) {
-		accountServ.transferMoney(ammount, sourceaccount, targetaccount, type, message);
-		return "ok";
+	@PostMapping("/account/{accountId}/withdraw")
+	public String withdrawMoney(@PathVariable long accountId, long userId, double ammount, String currency) {
+		return accountService.withdrawMoney(accountId, userId, ammount, currency);
 	}
+	
+	@PostMapping("/account/{accountid}/deposit")
+	public String depositMoney(@PathVariable long accountid, String ammount, String type, String message) {
+		double tempAmmount = Double.parseDouble(ammount);
+		return accountService.depositMoney(tempAmmount, accountid, type, message);
+	}
+	
+	@PostMapping("/account/{accountId}/topup")
+	public String topUpAccount(@PathVariable long accountId, long userId, double ammount, String currency) {
+		return accountService.topUpAccount(accountId, userId, ammount, currency);
+	}
+	
+	
+	
 }

@@ -1,6 +1,7 @@
 package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,9 +42,28 @@ public class TransactionDAO  implements com.hh.HHBank.interfaces.ATM.Transaction
 		return transaction;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Transaction> getTransactionByInterval(Timestamp ts, Timestamp tf) {
+		List<Transaction> transactions = new ArrayList<Transaction>();
+		try {
+			transactions = (List<Transaction>) em.createQuery(
+					"select t from Transaction t where transactionDate > :transactionTs and transactionDate < :transactionTf")
+					.setParameter("transactionTs", ts).setParameter("transactionTf", tf).getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return transactions;
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transaction> getAllTransactions() {
-		List<Transaction> transactions = em.createQuery("select t from Transaction t").getResultList();
+		List<Transaction> transactions = new ArrayList<Transaction>();
+		try {
+		transactions = (List<Transaction>)em.createQuery("select t from Transaction t").getResultList();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return transactions;
 	}
 
@@ -54,9 +74,9 @@ public class TransactionDAO  implements com.hh.HHBank.interfaces.ATM.Transaction
 	}
 
 	@Override
-	public void updateById(Transaction t) {
-		em.merge(t);
+	public void updateById(Transaction transaction) {
 		
+		em.merge(transaction);	
 	}
 
 	@Override
@@ -64,6 +84,19 @@ public class TransactionDAO  implements com.hh.HHBank.interfaces.ATM.Transaction
 		Transaction transaction = em.find(Transaction.class, id);
 		em.remove(transaction);
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Transaction> getBySourceAccount(long accountId) {
+		List<Transaction> transactions = new ArrayList<Transaction>();
+		try {
+			transactions = (List<Transaction>) em
+					.createQuery("SELECT t FROM Transaction t WHERE sourceAccount = :sourceAccount")
+					.setParameter("sourceAccount", accountId).getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return transactions;
 	}
 
 }
