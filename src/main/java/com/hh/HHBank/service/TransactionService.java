@@ -72,7 +72,7 @@ public class TransactionService {
 		tempTransaction.setMessage("Transaction approved");
 		transDao.updateById(tempTransaction);
 
-		if (tempTransaction.getTransactionType() == "top up") {
+		if (tempTransaction.getTransactionType().equals("top up")) {
 			try {
 				Account a = accountDao.getAcctById(tempTransaction.getSourceAccount());	
 				a.setAmmount(a.getAmmount() + tempTransaction.getAmmount());
@@ -88,7 +88,7 @@ public class TransactionService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (tempTransaction.getTransactionType() == "transfer") {
+		} else if (tempTransaction.getTransactionType().equals("transfer")) {
 			try {
 				Account aSrc = accountDao.getAcctById(tempTransaction.getSourceAccount());
 				Account aDes = accountDao.getAcctById(tempTransaction.getTargetAccount());

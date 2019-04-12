@@ -38,7 +38,7 @@ public class LogController {
 	}
 	
 	@GetMapping("/{ts}/{tf}/log")
-	public List<Logs> getLogByDate(@PathVariable Timestamp ts, @PathVariable Timestamp tf) {
+	public List<Logs> getLogByDate(@PathVariable String ts, @PathVariable String tf) {
 		return logR.GetByDate(ts, tf);
 	}
 	

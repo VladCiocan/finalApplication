@@ -1,8 +1,13 @@
 package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -89,11 +94,18 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Logs> GetByDate(Timestamp ts, Timestamp tf) {
+	public List<Logs> GetByDate(String ts, String tf) {
+		
+		Date fDate = convertStringToDate(ts);
+		Date sDate = convertStringToDate(tf);
+		Timestamp fts = new Timestamp(fDate.getTime());
+		System.out.println(fts);
+		Timestamp sts = new Timestamp(sDate.getTime());
+		System.out.println(sts);
 		List<Logs> log = null;
 		try {
 			log = (List<Logs>) em.createQuery("SELECT l FROM Logs l WHERE actiondate >= :ts and actiondate <= :tf")
-					.setParameter("ts", ts).setParameter("tf", tf).getResultList();
+					.setParameter("ts", fts).setParameter("tf", sts).getResultList();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -104,6 +116,18 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 		em.persist(logs);
 		return logs.getMessage();
 	}
+	
+	public static Date convertStringToDate(String dateString) {
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(dateString);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
 	
 
 }
