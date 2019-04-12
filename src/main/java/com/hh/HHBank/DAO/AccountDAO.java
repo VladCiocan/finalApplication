@@ -74,7 +74,7 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO {
 	public String withdrawMoney(long accountId, long userId, double ammount, String currency) {
 		String returnMessage = "";
 		try {
-			Account a = (Account) em.createQuery("SELECT a FROM Account a WHERE id = :accountID and userId = :userId")
+			Account a = (Account) em.createQuery("SELECT a FROM Account a WHERE id = :accountId and userId = :userId")
 					.setParameter("accountId", accountId).setParameter("userId", userId).getSingleResult();
 			if (a.getAmmount() >= ammount) {
 				Transaction t = new Transaction();

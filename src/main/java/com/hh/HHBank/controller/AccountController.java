@@ -1,6 +1,5 @@
 package com.hh.HHBank.controller;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -23,7 +22,7 @@ public class AccountController {
 	private AccountDAO acctR;
 	
 	@GetMapping("/accounts")
-	public List<Account> getAllAccounts(Pageable pageable){
+	public List<Account> getAllAccounts(){
 		return acctR.getAllAccts();
 	}
 	

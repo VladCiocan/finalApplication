@@ -70,7 +70,7 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO {
 		try {
 			user = (User) em.createQuery("SELECT u from User u WHERE username = :username")
 					.setParameter("username", username).getSingleResult();
-			if (user != null && user.getPassword() == password) {
+			if (user != null && user.getPassword().equals(password)) {
 				Session s = new Session();
 				s.setUserid(user.getUserID());
 				s.setUuid(UUID.randomUUID().toString());
@@ -88,7 +88,7 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO {
 				em.flush();
 
 				returnMessage = s.getUuid();
-			} else if (user != null && user.getPassword() != password) {
+			} else if (user != null && !user.getPassword().equals(password)) {
 				Logs l = new Logs();
 				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("login");
@@ -97,11 +97,9 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO {
 				em.persist(l);
 				em.flush();
 				returnMessage =  "Password is incorrect, please try again";
-			} else {
-				returnMessage = "Login credentials are incorrect!";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			returnMessage = "Login credentials are incorrect!";
 		}
 		return returnMessage;
 	}
@@ -109,7 +107,7 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO {
 	@Override
 	public String changePassword(long userId, String password, String newPassword) {
 		User tempUser = em.find(User.class, userId);
-		if(password == tempUser.getPassword()) {
+		if(password.equals(tempUser.getPassword())) {
 			tempUser.setPassword(newPassword);
 			em.merge(tempUser);
 			return "Password change successfull!";

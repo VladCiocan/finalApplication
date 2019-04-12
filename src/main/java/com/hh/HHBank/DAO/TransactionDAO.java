@@ -94,7 +94,7 @@ public class TransactionDAO implements com.hh.HHBank.interfaces.ATM.TransactionD
 		tempTransaction.setMessage("Transaction approved");
 		em.merge(tempTransaction);
 
-		if (tempTransaction.getTransactionType() == "top up") {
+		if (tempTransaction.getTransactionType().equals("top up")) {
 			try {
 				Account a = (Account) em.createQuery("SELECT a FROM Account a WHERE id = :accountID")
 						.setParameter("accountId", tempTransaction.getSourceAccount()).getSingleResult();
@@ -112,7 +112,7 @@ public class TransactionDAO implements com.hh.HHBank.interfaces.ATM.TransactionD
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (tempTransaction.getTransactionType() == "transfer") {
+		} else if (tempTransaction.getTransactionType().equals("transfer")) {
 			try {
 				Account aSrc = (Account) em.createQuery("SELECT a FROM Account a WHERE id = :accountID")
 						.setParameter("accountId", tempTransaction.getSourceAccount()).getSingleResult();

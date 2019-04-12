@@ -2,7 +2,6 @@ package com.hh.HHBank.Entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,6 +1,5 @@
 package com.hh.HHBank.controller;
 
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class LogController {
 	LogsDAO logR;
 	
 	@GetMapping("/logs")
-	public List<Logs> getAllLogs(Pageable pageable){
+	public List<Logs> getAllLogs(){
 		return logR.getAllLogs();
 	}
 	

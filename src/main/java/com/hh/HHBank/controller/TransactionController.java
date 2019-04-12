@@ -1,6 +1,5 @@
 package com.hh.HHBank.controller;
 
-import java.awt.print.Pageable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class TransactionController {
 	TransactionDAO transactionR;
 	
 	@GetMapping("/transactions")
-	public List<Transaction> getAllTransactions(Pageable pageable){
+	public List<Transaction> getAllTransactions(){
 		return transactionR.getAllTransactions();
 	}
 	
