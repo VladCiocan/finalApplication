@@ -2,7 +2,6 @@ package com.hh.HHBank.Entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,26 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="logs")
+@Table(name = "logs")
 
 public class Logs implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column (name = "logId")
+	@Column(name = "logId")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
-	@Column(name="actiondate")
+
+	@Column(name = "actiondate")
 	private Timestamp actiondate;
-	
+
 	@Column(name = "actiontype")
 	private String actiontype;
-	
+
 	@Column(name = "userid")
 	private long uid;
-	
+
 	@Column(name = "message")
 	private String message;
 
@@ -78,9 +77,12 @@ public class Logs implements Serializable {
 	public Logs() {
 		super();
 	}
-	
-	
-	
+
+	public Logs(String actiontype, long uid, String message) {
+		super();
+		this.actiontype = actiontype;
+		this.uid = uid;
+		this.message = message;
+	}
+
 }
-
-
