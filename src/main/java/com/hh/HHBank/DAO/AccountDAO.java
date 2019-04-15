@@ -51,6 +51,11 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO {
 
 	@Override
 	public void update(Account account) {
+	}
+
+	public void update(Account account, double amount) {
+		Account db = getAcctById(account.getId());
+		db.setAmmount(String.valueOf(Double.parseDouble(db.getAmmount()) + amount));
 		if (account.getAmmount() != null) {
 			Account acct = em.find(Account.class, account.getId());
 			acct.setAmmount(account.getAmmount());

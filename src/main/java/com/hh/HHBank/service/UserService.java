@@ -15,20 +15,18 @@ public class UserService {
 	public User getUserById(long id) {
 		User user = userDAO.getUserById(id);
 		return user;
-	}	
-	
+	}
+
 	public User getUserByUsername(String username) {
 		User user = userDAO.getUserByUsername(username);
 		return user;
 	}
-	
+
 	public String checkLoginCredentials(String username, String password) {
-		String message = "";		
 		User user = userDAO.getUserByUsername(username);
-		if(user != null && user.getPassword().equals(password)) message = Globals.succesfulLoginMessage;
-		else if(user != null && !user.getPassword().equals(password)) message = Globals.incorrectPasswordMessage;
-		else message = Globals.noUserMessage;
-						
-		return message;
+		if (user != null && user.getPassword().equals(password))
+			return Globals.succesfulLoginMessage;
+
+		return Globals.incorrectCredentialsMessage;
 	}
 }

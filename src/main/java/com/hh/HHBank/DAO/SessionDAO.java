@@ -10,7 +10,7 @@ import com.hh.HHBank.Entities.Session;
 
 @Repository
 @Transactional
-public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
+public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO {
 
 	@PersistenceContext
 	private EntityManager em;
@@ -26,7 +26,6 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 		try {
 			session = (Session) em.createQuery("SELECT s FROM Session s WHERE uuid = :sessionUUID")
 					.setParameter("sessionUUID", sessionUUID).getSingleResult();
-			System.out.println(session.getSessionDate());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -18,8 +18,8 @@ public class AccountService {
 	@Autowired
 	private LogDAO logDao;
 
-	public void updateAccountAmount(Account account) {
-		accountDao.update(account);
+	public void updateAccountAmount(Account account,double amount) {
+		accountDao.update(account,amount);
 		logDao.createLog(new Logs("Change amount", account.getUserId(),
 				"The amount of the account with id " + account.getId() + " was changed to" + account.getAmmount()));
 	}

@@ -1,9 +1,8 @@
 package com.hh.HHBank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hh.HHBank.Entities.Logs;
@@ -25,25 +24,14 @@ public class UserController {
 	@Autowired
 	private LogService LS;
 
-	@GetMapping("/atm/login")
-	public String loginUserPage() {
-		return "login";
-	}
-
 	@PostMapping("/atm/login")
-	public String loginUser(@RequestBody User user) {
-
-		if (US.checkLoginCredentials(user.getUsername(), user.getPassword()).equals(Globals.succesfulLoginMessage)) {
-			User dbUser = US.getUserByUsername(user.getUsername());
-			LS.createLog(new Logs("login", dbUser.getUserID(), "Successful login"));
+	public String loginUser(@RequestParam String username, @RequestParam String password) {
+		if (US.checkLoginCredentials(username, password).equals(Globals.succesfulLoginMessage)) {
+			User dbUser = US.getUserByUsername(username);
+			LS.createLog(new Logs(Globals.login, dbUser.getUserID(), Globals.succesfulLoginMessage));
 			return SS.createNewSessionAndReturnIt(dbUser.getUserID());
-		} else if (US.checkLoginCredentials(user.getUsername(), user.getPassword())
-				.equals(Globals.incorrectPasswordMessage)) {
-			User dbUser = US.getUserByUsername(user.getUsername());
-			LS.createLog(new Logs("login", dbUser.getUserID(), "Failed login"));
-			return Globals.incorrectPasswordMessage;
-		} else {
-			return Globals.noUserMessage;
 		}
+		return Globals.incorrectCredentialsMessage;
+
 	}
 }
