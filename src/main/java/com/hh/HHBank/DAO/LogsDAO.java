@@ -120,7 +120,7 @@ public class LogsDAO implements com.hh.HHBank.interfaces.ATM.LogsDAO{
 	public static Date convertStringToDate(String dateString) {
 		Date date = null;
 		try {
-			date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse(dateString);
+			date = new SimpleDateFormat("dd-MM-yyyy").parse(dateString);
 		} catch (ParseException e) {
 			
 			e.printStackTrace();

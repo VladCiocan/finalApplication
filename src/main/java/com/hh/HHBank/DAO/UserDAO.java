@@ -28,12 +28,13 @@ public class UserDAO implements com.hh.HHBank.interfaces.ATM.UserDAO{
 	@Override
 	public User getUserById(long id) {
 		User user = em.find(User.class, id);
-		if (user ==null) {
+		if (user == null) {
 			throw new EntityNotFoundException("Can't find User for ID " + id);
 		}
 		return user;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getAllUsers() {
 		List<User> users = new ArrayList<User>();

@@ -41,21 +41,17 @@ public class AccountService {
 	}
 	
 	public void createAccount(Account a) {
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-		a.setCreatedDate(new Timestamp(currentTimestamp));
+		a.setCreatedDate(new Timestamp(System.currentTimeMillis()));
 		accountDao.createAcct(a);
 	}
 	
 	public List<Account> getAccountsByUserId(long id){
 		return accountDao.getAccountByUserId(id);
 	}
-	public Account getAccountByIdAndUserId (long accountid, long userid) {
-		return accountDao.getAccountByIdAndUserId(accountid, userid);
-	}
+	
 	
 	public String depositMoney(double ammount, long accountid, String type, String message) {
 		
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
 		Account account = new Account();
 		Transaction transaction = new Transaction();
 		
@@ -65,7 +61,7 @@ public class AccountService {
 		accountDao.updateById(account);
 		
 		transaction.setAmmount(ammount);
-		transaction.setTransactionDate(new Timestamp(currentTimestamp));
+		transaction.setTransactionDate(new Timestamp(System.currentTimeMillis()));
 		transaction.setTransactionType(type);
 		transaction.setMessage(message);
 		transaction.setTargetAccount(accountid);
@@ -78,11 +74,11 @@ public class AccountService {
 	public String transferMoney(long sourceAcctId, long userId, double ammount, String currency, long destinationAcctId) {
 		String returnMessage = "";
 		try {
-			Account aSrc = accountDao.getAccountByIdAndUserId(sourceAcctId, userId);
-			long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+			Account aSrc = accountDao.getAcctById(sourceAcctId);
+			
 			if (aSrc.getAmmount() >= ammount) {
 				Transaction t = new Transaction();
-				t.setTransactionDate(new Timestamp(currentTimestamp));
+				t.setTransactionDate(new Timestamp(System.currentTimeMillis()));
 				t.setTransactionType("transfer");
 				t.setSourceAccount(sourceAcctId);
 				t.setTargetAccount(destinationAcctId);
@@ -92,7 +88,7 @@ public class AccountService {
 				transactionDao.createTransaction(t);
 
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("transfer");
 				l.setUid(userId);
 				l.setMessage("Transferred " + String.valueOf(ammount) + currency + " from account "
@@ -102,7 +98,7 @@ public class AccountService {
 				returnMessage = "Transfer registered successfully, please wait for approval!";
 			} else {
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("transfer");
 				l.setUid(userId);
 				l.setMessage("Failed to transfer " + String.valueOf(ammount) + currency + " from account "
@@ -117,9 +113,9 @@ public class AccountService {
 	}
 	
 	public String topUpAccount(long accountId, long userId, double ammount, String currency) {
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		
 		Transaction t = new Transaction();
-		t.setTransactionDate(new Timestamp(currentTimestamp));
+		t.setTransactionDate(new Timestamp(System.currentTimeMillis()));
 		t.setTransactionType("top up");
 		t.setSourceAccount(accountId);
 		t.setAmmount(ammount);
@@ -128,7 +124,7 @@ public class AccountService {
 		transactionDao.createTransaction(t);
 
 		Logs l = new Logs();
-		l.setActiondate(new Timestamp(currentTimestamp));
+		l.setActiondate(new Timestamp(System.currentTimeMillis()));
 		l.setActiontype("top up");
 		l.setUid(userId);
 		l.setMessage("Top up account " + String.valueOf(accountId) + " with " + String.valueOf(ammount) + currency);
@@ -140,11 +136,11 @@ public class AccountService {
 	public String withdrawMoney(long accountId, long userId, double ammount, String currency) {
 		String returnMessage = "";
 		try {
-			Account a = accountDao.getAccountByIdAndUserId(accountId, userId);
-			long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+			Account a = accountDao.getAcctById(accountId);
+			
 			if (a.getAmmount() >= ammount) {
 				Transaction t = new Transaction();
-				t.setTransactionDate(new Timestamp(currentTimestamp));
+				t.setTransactionDate(new Timestamp(System.currentTimeMillis()));
 				t.setTransactionType("withdraw");
 				t.setSourceAccount(accountId);
 				t.setAmmount(ammount);
@@ -156,7 +152,7 @@ public class AccountService {
 				accountDao.updateById(a);
 
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("withdraw");
 				l.setUid(userId);
 				l.setMessage("Withdrawed " + String.valueOf(ammount) + currency + " from account "
@@ -166,7 +162,7 @@ public class AccountService {
 				returnMessage = "Money on the way";
 			} else {
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("withdraw");
 				l.setUid(userId);
 				l.setMessage("Failed to withdraw " + String.valueOf(ammount) + currency + " from account "

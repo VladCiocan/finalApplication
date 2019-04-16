@@ -81,19 +81,7 @@ public class AccountDAO implements com.hh.HHBank.interfaces.ATM.AccountDAO{
 		return acct;
 	}
 	
-	public Account getAccountByIdAndUserId (long accountid, long userid) {
-		Account account = null;
-		try {
-			account = (Account)em.createQuery("SELECT a FROM Account a WHERE id = :accountId and userId = :userId").setParameter("accountId", accountid).setParameter("userId", userid).getSingleResult();
-		}
-		catch(Exception e){
-			 e.printStackTrace();
-		}
-		if (account == null) {
-			throw new EntityNotFoundException("Can't find Account for " + accountid);
-		}
-		return account;
-	}
+
 	
 
 }

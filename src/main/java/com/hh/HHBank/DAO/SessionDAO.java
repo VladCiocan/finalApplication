@@ -28,8 +28,8 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 	public Session getBySessionUUID(String sessionUUID) {
 		Session session = null;	
 		try {
-			session  = (Session) em.createQuery("SELECT s FROM Session s WHERE sessionUUID = :sessionUUID")
-					.setParameter("sessionUUID", sessionUUID).getSingleResult();
+			session  = (Session) em.createQuery("SELECT s FROM Session s WHERE uuid = :uuid")
+					.setParameter("uuid", sessionUUID).getSingleResult();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -42,6 +42,7 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 		return sess;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Session> getAllSessions() {
 		List<Session> sessions = new ArrayList<Session>();
@@ -72,7 +73,7 @@ public class SessionDAO implements com.hh.HHBank.interfaces.ATM.SessionDAO{
 	}
 	
 	public String getSessionByUserId(long userId) {
-		Session s = (Session) em.createQuery("SELECT s FROM Session s WHERE userid =: userID")
+		Session s = (Session) em.createQuery("SELECT s FROM Session s WHERE userid =: userId")
 				.setParameter("userId", userId).getSingleResult();
 		return s.getUuid().toString();
 	}

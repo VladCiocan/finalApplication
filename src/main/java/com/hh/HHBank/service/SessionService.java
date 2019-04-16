@@ -1,6 +1,7 @@
 package com.hh.HHBank.service;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -20,9 +21,7 @@ public class SessionService {
 	public String createNewSessionAndReturnIt(int userId) {
 		Session session = new Session();
 		
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-		
-		session.setSessionDate(new Timestamp(currentTimestamp));
+		session.setSessionDate(new Timestamp(System.currentTimeMillis()));
 		session.setUuid(UUID.randomUUID().toString());
 		session.setUserid(userId);
 		sessionDAO.saveSession(session);
@@ -33,9 +32,11 @@ public class SessionService {
 		
 		Session session = new Session ();
 		session = sessionDAO.getSessionById(s.getId());
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
-		Timestamp currentTs = new Timestamp(currentTimestamp);
-		Timestamp sessionExpires = new Timestamp(session.getSessionDate().getTime() + 60 * 30 * 1000);
+		Timestamp currentTs = new Timestamp(System.currentTimeMillis());
+		Timestamp sessionExpires = new Timestamp(session.getSessionDate().getTime() + 60 * 30 * 100);
+		
+		System.out.println("Current Timestamp is: " + currentTs.toLocalDateTime());
+		System.out.println("Expires Timestamp is: " + sessionExpires.toLocalDateTime());
 		
 		if (currentTs.after(sessionExpires)) {
 			return false;
@@ -44,5 +45,33 @@ public class SessionService {
 		{
 			return true;
 		}
+	}
+	
+	public Session getBySessionUUID(String sessionUUID) {
+		return sessionDAO.getBySessionUUID(sessionUUID);
+	}
+	
+	public Session getSessionById(long id) {
+		return sessionDAO.getSessionById(id);
+	}
+	
+	public List<Session> getAllSessions(){
+		return sessionDAO.getAllSessions();
+	}
+	
+	public String getSessionByUserId(long userId) {
+		return sessionDAO.getSessionByUserId(userId);
+	}
+	
+	public void deleteById(long id) {
+		sessionDAO.deleteById(id);
+	}
+	
+	public void updateSession(Session s) {
+		sessionDAO.updateById(s);
+	}
+	
+	public void createSession(Session s) {
+		sessionDAO.createSession(s);
 	}
 }

@@ -2,6 +2,7 @@ package com.hh.HHBank.DAO;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -43,12 +44,19 @@ public class TransactionDAO  implements com.hh.HHBank.interfaces.ATM.Transaction
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Transaction> getTransactionByInterval(Timestamp ts, Timestamp tf) {
+	public List<Transaction> getTransactionByInterval(String ts, String tf) {
+		Date fDate = LogsDAO.convertStringToDate(ts);
+		Date sDate = LogsDAO.convertStringToDate(tf);
+		Timestamp fts = new Timestamp(fDate.getTime());
+		System.out.println(fts);
+		Timestamp sts = new Timestamp(sDate.getTime());
+		System.out.println(sts);
+		
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		try {
 			transactions = (List<Transaction>) em.createQuery(
 					"select t from Transaction t where transactionDate > :transactionTs and transactionDate < :transactionTf")
-					.setParameter("transactionTs", ts).setParameter("transactionTf", tf).getResultList();
+					.setParameter("transactionTs", fts).setParameter("transactionTf", sts).getResultList();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

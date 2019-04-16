@@ -17,6 +17,7 @@ public class UserService {
 	
 	@Autowired
 	private UserDAO userDao;
+	public static String UUID;
 	
 	public User getUserByID (long id) {
 		User user = userDao.getUserById(id);
@@ -44,7 +45,8 @@ public class UserService {
 	}
 	
 	public String login(String username, String password) {
-		return userDao.login(username, password);
+		UUID = userDao.login(username, password);
+		return UUID;
 	}
 	
 	public String changePassword (long userid, String password, String newPassword) {	

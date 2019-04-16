@@ -2,7 +2,7 @@ package com.hh.HHBank.service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class TransactionService {
 		return transDao.getTransactionByDate(ts);
 	}
 	
-	public List<Transaction> getTransactionByInterval(Timestamp ts, Timestamp tf){
+	public List<Transaction> getTransactionByInterval(String ts, String tf){
 		return transDao.getTransactionByInterval(ts, tf);
 	}
 	
@@ -65,7 +65,7 @@ public class TransactionService {
 	}
 	
 	public String approveTransaction(long transactionID, long userId) {
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		
 		Transaction tempTransaction = transDao.getTransactionById(transactionID);
 		User tempUser = userDao.getUserById(userId);
 		tempTransaction.setStatus("Approved");
@@ -79,7 +79,7 @@ public class TransactionService {
 				accountDao.updateById(a);
 				
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("approve transaction");
 				l.setUid(userId);
 				l.setMessage("Transaction " + String.valueOf(tempTransaction.getId()) + " approved by user " + tempUser.getUsername());
@@ -100,7 +100,7 @@ public class TransactionService {
 				accountDao.updateById(aDes);
 				
 				Logs l = new Logs();
-				l.setActiondate(new Timestamp(currentTimestamp));
+				l.setActiondate(new Timestamp(System.currentTimeMillis()));
 				l.setActiontype("approve transaction");
 				l.setUid(userId);
 				l.setMessage("Transaction " + String.valueOf(tempTransaction.getId()) + " approved by user " + tempUser.getUsername());
@@ -113,7 +113,7 @@ public class TransactionService {
 	}
 	
 	public String rejectTransaction(long transactionID, long userId) {
-		long currentTimestamp = TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS);
+		
 		Transaction tempTransaction = transDao.getTransactionById(transactionID);
 		User tempUser = userDao.getUserById(userId);
 		tempTransaction.setStatus("Rejected");
@@ -121,7 +121,7 @@ public class TransactionService {
 		transDao.updateById(tempTransaction);
 
 		Logs l = new Logs();
-		l.setActiondate(new Timestamp(currentTimestamp));
+		l.setActiondate(new Timestamp(System.currentTimeMillis()));
 		l.setActiontype("reject transaction");
 		l.setUid(userId);
 		l.setMessage("Transaction " + String.valueOf(tempTransaction.getId()) + " rejected by user " + tempUser.getUsername());
