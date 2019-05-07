@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.hh.HHBank.DAO.UserDAO;
 import com.hh.HHBank.Entities.User;
-import com.hh.HHBank.util.Globals;
 
 @Service
 public class UserService {
@@ -18,15 +17,10 @@ public class UserService {
 	}
 
 	public User getUserByUsername(String username) {
-		User user = userDAO.getUserByUsername(username);
-		return user;
+		return userDAO.getUserByUsername(username);
 	}
 
-	public String checkLoginCredentials(String username, String password) {
-		User user = userDAO.getUserByUsername(username);
-		if (user != null && user.getPassword().equals(password))
-			return Globals.succesfulLoginMessage;
-
-		return Globals.incorrectCredentialsMessage;
+	public User getUserByLoginCredentials(String username, String password) {
+		return userDAO.getUserByUsernameAndPassword(username, password);
 	}
 }

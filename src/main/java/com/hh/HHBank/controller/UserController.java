@@ -1,6 +1,7 @@
 package com.hh.HHBank.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,8 +12,10 @@ import com.hh.HHBank.service.LogService;
 import com.hh.HHBank.service.SessionService;
 import com.hh.HHBank.service.UserService;
 import com.hh.HHBank.util.Globals;
+import com.hh.HHBank.util.UnauthorizedException;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class UserController {
 
 	@Autowired
@@ -25,13 +28,12 @@ public class UserController {
 	private LogService LS;
 
 	@PostMapping("/atm/login")
-	public String loginUser(@RequestParam String username, @RequestParam String password) {
-		if (US.checkLoginCredentials(username, password).equals(Globals.succesfulLoginMessage)) {
-			User dbUser = US.getUserByUsername(username);
-			LS.createLog(new Logs(Globals.login, dbUser.getUserID(), Globals.succesfulLoginMessage));
-			return SS.createNewSessionAndReturnIt(dbUser.getUserID());
-		}
-		return Globals.incorrectCredentialsMessage;
+	public String loginUser(@RequestParam("username") String username, @RequestParam("password") String password) {
+		User user = US.getUserByLoginCredentials(username, password);
+		if (user == null)
+			throw new UnauthorizedException("Incorrect username or password!");
+		LS.createLog(new Logs(Globals.login, user.getUserID(), Globals.succesfulLoginMessage));
+		return SS.createNewSessionAndReturnIt(user.getUserID());
 
 	}
 }
